@@ -12,6 +12,7 @@ import {
   Languages,
 } from "lucide-react";
 import { PhoneFrame } from "@/components/PhoneFrame";
+import { EasyTerraLogo } from "@/components/EasyTerraLogo";
 import { bookings, getSupport, type Booking } from "@/lib/demo-data";
 
 export const Route = createFileRoute("/app/support")({
@@ -34,11 +35,11 @@ function SupportScreen() {
 
   return (
     <PhoneFrame>
-      <div className="px-5 pt-3 pb-2">
-        <h1 className="text-[32px] font-bold leading-tight text-foreground">
-          Support
-        </h1>
-        <p className="mt-1 text-sm text-muted-foreground">
+      {/* blue brand band */}
+      <div className="bg-primary px-5 pt-4 pb-6 text-primary-foreground">
+        <EasyTerraLogo size="sm" onBlue />
+        <h1 className="mt-5 text-[28px] font-bold leading-tight">Support</h1>
+        <p className="mt-1 text-sm opacity-85">
           Hulp is per huurauto verschillend. Kies eerst je boeking.
         </p>
       </div>

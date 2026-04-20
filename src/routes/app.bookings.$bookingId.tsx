@@ -45,7 +45,7 @@ function BookingDetail() {
 
   return (
     <PhoneFrame>
-      <AppHeader title="Boekingsdetails" back="/app/bookings" />
+      <AppHeader title="Boekingsdetails" back="/app/bookings" variant="blue" />
 
       {/* hero */}
       <div className="relative h-56 bg-muted">

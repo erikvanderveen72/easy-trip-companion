@@ -11,6 +11,7 @@ import {
   Star,
 } from "lucide-react";
 import { PhoneFrame } from "@/components/PhoneFrame";
+import { EasyTerraLogo } from "@/components/EasyTerraLogo";
 
 export const Route = createFileRoute("/app/profile")({
   component: ProfileScreen,
@@ -19,26 +20,25 @@ export const Route = createFileRoute("/app/profile")({
 function ProfileScreen() {
   return (
     <PhoneFrame>
-      {/* header */}
-      <div className="px-5 pt-3 pb-6">
-        <h1 className="text-[32px] font-bold leading-tight text-foreground">
-          Profiel
-        </h1>
+      {/* blue brand band */}
+      <div className="bg-primary px-5 pt-4 pb-10 text-primary-foreground">
+        <EasyTerraLogo size="sm" onBlue />
+        <h1 className="mt-5 text-[28px] font-bold leading-tight">Profiel</h1>
       </div>
 
-      {/* profile card */}
-      <div className="px-5">
+      {/* profile card overlapping band */}
+      <div className="-mt-6 px-5">
         <div
-          className="flex items-center gap-4 rounded-3xl bg-primary p-5 text-primary-foreground"
+          className="flex items-center gap-4 rounded-3xl bg-background p-5"
           style={{ boxShadow: "var(--shadow-card)" }}
         >
-          <div className="flex h-16 w-16 items-center justify-center rounded-full bg-white/20 text-2xl font-bold">
+          <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary text-2xl font-bold text-primary-foreground">
             LV
           </div>
           <div className="flex-1">
-            <p className="text-lg font-bold">Lieke de Vries</p>
-            <p className="text-xs opacity-85">lieke@example.nl</p>
-            <div className="mt-2 inline-flex items-center gap-1 rounded-full bg-white/15 px-2.5 py-1 text-[10px] font-bold">
+            <p className="text-lg font-bold text-foreground">Lieke de Vries</p>
+            <p className="text-xs text-muted-foreground">lieke@example.nl</p>
+            <div className="mt-2 inline-flex items-center gap-1 rounded-full bg-secondary px-2.5 py-1 text-[10px] font-bold text-primary">
               <Star className="h-3 w-3 fill-current" /> Loyalty · 3 boekingen
             </div>
           </div>
@@ -51,7 +51,6 @@ function ProfileScreen() {
           <Stat label="Bespaard" value="€84" />
         </div>
       </div>
-
       {/* sections */}
       <Section title="Account">
         <Row to="/app/profile" icon={<User className="h-4 w-4" />} label="Persoonsgegevens" />
