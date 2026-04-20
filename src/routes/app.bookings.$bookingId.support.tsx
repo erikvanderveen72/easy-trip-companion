@@ -1,5 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import {
   MessageCircle,
   Phone,
@@ -12,57 +11,71 @@ import {
   Languages,
 } from "lucide-react";
 import { PhoneFrame } from "@/components/PhoneFrame";
-import { EasyTerraLogo } from "@/components/EasyTerraLogo";
-import { bookings, getSupport, type Booking } from "@/lib/demo-data";
+import { AppHeader } from "@/components/AppHeader";
+import { getBooking, getSupport } from "@/lib/demo-data";
 
-export const Route = createFileRoute("/app/support")({
-  component: SupportScreen,
+export const Route = createFileRoute("/app/bookings/$bookingId/support")({
+  loader: ({ params }) => {
+    const booking = getBooking(params.bookingId);
+    if (!booking) throw notFound();
+    return booking;
+  },
+  component: BookingSupportScreen,
+  notFoundComponent: () => (
+    <PhoneFrame showTabs={false}>
+      <div className="px-6 py-12 text-center">
+        <p className="text-sm text-muted-foreground">Boeking niet gevonden.</p>
+        <Link to="/app/bookings" className="mt-4 inline-block font-semibold text-primary">
+          Terug naar boekingen
+        </Link>
+      </div>
+    </PhoneFrame>
+  ),
 });
 
-const generalFaqs = [
-  "Hoe wijzig ik mijn boeking?",
-  "Wat moet ik meenemen bij ophalen?",
-  "Hoe werkt het Worry-Free pakket?",
-];
+function BookingSupportScreen() {
+  const booking = Route.useLoaderData();
+  const support = getSupport(booking.supplier);
 
-function SupportScreen() {
-  // Default to first upcoming booking, fallback to first
-  const defaultBooking =
-    bookings.find((b) => b.status === "upcoming") ?? bookings[0];
-  const [selectedId, setSelectedId] = useState<string>(defaultBooking.id);
-  const selected = bookings.find((b) => b.id === selectedId) ?? defaultBooking;
-  const support = getSupport(selected.supplier);
+  const faqs = [
+    `Hoe wijzig ik deze boeking (${booking.reference})?`,
+    `Wat moet ik meenemen bij het ophalen bij ${support.name}?`,
+    booking.worryFree
+      ? "Hoe werkt mijn Worry-Free pakket?"
+      : "Kan ik nog Worry-Free toevoegen?",
+  ];
 
   return (
     <PhoneFrame>
-      {/* blue brand band */}
-      <div className="bg-primary px-5 pt-4 pb-6 text-primary-foreground">
-        <EasyTerraLogo size="sm" onBlue />
-        <h1 className="mt-5 text-[28px] font-bold leading-tight">Support</h1>
-        <p className="mt-1 text-sm opacity-85">
-          Hulp is per huurauto verschillend. Kies eerst je boeking.
-        </p>
-      </div>
+      <AppHeader
+        title="Support"
+        back="/app/bookings/$bookingId"
+        backParams={{ bookingId: booking.id }}
+        variant="blue"
+      />
 
-      {/* Booking selector */}
-      <div className="px-5 pt-3">
-        <p className="mb-2 text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
-          Voor welke huurauto?
+      {/* Context band */}
+      <div className="bg-primary px-5 pb-6 pt-2 text-primary-foreground">
+        <p className="text-[11px] font-semibold uppercase tracking-wider opacity-85">
+          Support voor
         </p>
-        <div className="flex gap-2 overflow-x-auto pb-1">
-          {bookings.map((b) => (
-            <BookingChip
-              key={b.id}
-              b={b}
-              active={b.id === selectedId}
-              onClick={() => setSelectedId(b.id)}
-            />
-          ))}
+        <div className="mt-2 flex items-center gap-3">
+          <img
+            src={booking.carImage}
+            alt={booking.carName}
+            className="h-12 w-12 rounded-xl object-cover"
+          />
+          <div>
+            <p className="text-lg font-bold leading-tight">{booking.carName}</p>
+            <p className="text-xs opacity-85">
+              {booking.supplier} · {booking.reference}
+            </p>
+          </div>
         </div>
       </div>
 
       {/* Partner card */}
-      <div className="mt-4 px-5">
+      <div className="-mt-3 px-5">
         <div
           className="overflow-hidden rounded-3xl bg-background"
           style={{ boxShadow: "var(--shadow-card)" }}
@@ -149,17 +162,17 @@ function SupportScreen() {
       {/* FAQ */}
       <div className="mt-6 px-5 pb-2">
         <h2 className="mb-2 text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
-          Veelgesteld
+          Veelgesteld over deze boeking
         </h2>
         <div
           className="overflow-hidden rounded-3xl bg-background"
           style={{ boxShadow: "var(--shadow-card)" }}
         >
-          {generalFaqs.map((q, i) => (
+          {faqs.map((q, i) => (
             <button
               key={q}
               className={`flex w-full items-center gap-3 px-4 py-3.5 text-left ${
-                i !== generalFaqs.length - 1 ? "border-b border-border" : ""
+                i !== faqs.length - 1 ? "border-b border-border" : ""
               }`}
             >
               <HelpCircle className="h-4 w-4 text-primary" />
@@ -170,39 +183,6 @@ function SupportScreen() {
         </div>
       </div>
     </PhoneFrame>
-  );
-}
-
-function BookingChip({
-  b,
-  active,
-  onClick,
-}: {
-  b: Booking;
-  active: boolean;
-  onClick: () => void;
-}) {
-  return (
-    <button
-      onClick={onClick}
-      className={`flex shrink-0 items-center gap-2 rounded-2xl border px-3 py-2 text-left transition ${
-        active
-          ? "border-primary bg-primary text-primary-foreground"
-          : "border-border bg-background text-foreground"
-      }`}
-    >
-      <img
-        src={b.carImage}
-        alt={b.carName}
-        className="h-9 w-9 rounded-lg object-cover"
-      />
-      <div>
-        <p className="text-xs font-bold leading-tight">{b.carName}</p>
-        <p className={`text-[10px] ${active ? "opacity-85" : "text-muted-foreground"}`}>
-          {b.supplier}
-        </p>
-      </div>
-    </button>
   );
 }
 

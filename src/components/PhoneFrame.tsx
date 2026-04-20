@@ -1,5 +1,5 @@
 import { Link, useLocation } from "@tanstack/react-router";
-import { Calendar, LifeBuoy, User, Signal, Wifi, BatteryFull } from "lucide-react";
+import { Calendar, User, Signal, Wifi, BatteryFull } from "lucide-react";
 import { useEffect, useState, type ReactNode } from "react";
 
 interface PhoneFrameProps {
@@ -9,7 +9,6 @@ interface PhoneFrameProps {
 
 const tabs = [
   { to: "/app/bookings", label: "Boekingen", icon: Calendar },
-  { to: "/app/support", label: "Support", icon: LifeBuoy },
   { to: "/app/profile", label: "Profiel", icon: User },
 ] as const;
 

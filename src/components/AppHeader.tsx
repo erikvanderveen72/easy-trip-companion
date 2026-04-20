@@ -5,11 +5,18 @@ import type { ReactNode } from "react";
 interface AppHeaderProps {
   title: string;
   back?: string;
+  backParams?: Record<string, string>;
   right?: ReactNode;
   variant?: "light" | "blue";
 }
 
-export function AppHeader({ title, back, right, variant = "light" }: AppHeaderProps) {
+export function AppHeader({
+  title,
+  back,
+  backParams,
+  right,
+  variant = "light",
+}: AppHeaderProps) {
   const blue = variant === "blue";
   return (
     <div
@@ -21,6 +28,7 @@ export function AppHeader({ title, back, right, variant = "light" }: AppHeaderPr
         {back && (
           <Link
             to={back}
+            params={backParams as never}
             className={`-ml-2 flex h-9 w-9 items-center justify-center rounded-full ${
               blue ? "hover:bg-white/10" : "hover:bg-muted"
             }`}
