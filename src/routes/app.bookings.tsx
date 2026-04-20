@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
-import { MapPin, Calendar, ShieldCheck, ChevronRight, Bell, Ticket } from "lucide-react";
+import { MapPin, Calendar, ShieldCheck, Bell, Ticket, Settings, LifeBuoy } from "lucide-react";
 import { PhoneFrame } from "@/components/PhoneFrame";
 import { EasyTerraLogo } from "@/components/EasyTerraLogo";
 import { bookings, formatDate, daysBetween, type Booking } from "@/lib/demo-data";
@@ -70,69 +70,112 @@ function BookingsScreen() {
 
 function BookingCard({ b }: { b: Booking }) {
   const days = daysBetween(b.pickupDate, b.dropoffDate);
+  const isUpcoming = b.status === "upcoming";
   return (
-    <Link
-      to="/app/bookings/$bookingId"
-      params={{ bookingId: b.id }}
-      className="block overflow-hidden rounded-3xl bg-background"
+    <div
+      className="overflow-hidden rounded-3xl bg-background"
       style={{ boxShadow: "var(--shadow-card)" }}
     >
-      <div className="relative h-32 bg-muted">
-        <img src={b.carImage} alt={b.carName} className="h-full w-full object-cover" />
-        <div className="absolute left-3 top-3 flex gap-2">
-          {b.worryFree && (
-            <span className="inline-flex items-center gap-1 rounded-full bg-accent px-2.5 py-1 text-[10px] font-bold text-accent-foreground">
-              <ShieldCheck className="h-3 w-3" /> Worry-Free
+      <Link
+        to="/app/bookings/$bookingId"
+        params={{ bookingId: b.id }}
+        className="block"
+      >
+        <div className="relative h-32 bg-muted">
+          <img src={b.carImage} alt={b.carName} className="h-full w-full object-cover" />
+          <div className="absolute left-3 top-3 flex gap-2">
+            {b.worryFree && (
+              <span className="inline-flex items-center gap-1 rounded-full bg-accent px-2.5 py-1 text-[10px] font-bold text-accent-foreground">
+                <ShieldCheck className="h-3 w-3" /> Worry-Free
+              </span>
+            )}
+            <span className="rounded-full bg-background/95 px-2.5 py-1 text-[10px] font-bold text-foreground">
+              {b.supplier}
             </span>
-          )}
-          <span className="rounded-full bg-background/95 px-2.5 py-1 text-[10px] font-bold text-foreground">
-            {b.supplier}
-          </span>
+          </div>
+          <div className="absolute right-3 top-3 rounded-full bg-foreground/85 px-2.5 py-1 text-[10px] font-semibold text-background">
+            {days} dagen
+          </div>
         </div>
-        <div className="absolute right-3 top-3 rounded-full bg-foreground/85 px-2.5 py-1 text-[10px] font-semibold text-background">
-          {days} dagen
-        </div>
-      </div>
 
-      <div className="p-4">
-        <div className="flex items-start justify-between">
+        <div className="p-4">
           <div>
             <h3 className="text-[17px] font-bold text-foreground">{b.carName}</h3>
             <p className="text-xs text-muted-foreground">{b.carCategory}</p>
           </div>
-          <ChevronRight className="mt-1 h-5 w-5 text-muted-foreground" />
-        </div>
 
-        <div className="mt-3 space-y-2 text-sm">
-          <Row icon={<MapPin className="h-4 w-4" />} text={b.pickupLocation} />
-          <Row
-            icon={<Calendar className="h-4 w-4" />}
-            text={`${formatDate(b.pickupDate)} → ${formatDate(b.dropoffDate)}`}
-          />
-        </div>
+          <div className="mt-3 space-y-2 text-sm">
+            <Row icon={<MapPin className="h-4 w-4" />} text={b.pickupLocation} />
+            <Row
+              icon={<Calendar className="h-4 w-4" />}
+              text={`${formatDate(b.pickupDate)} → ${formatDate(b.dropoffDate)}`}
+            />
+          </div>
 
-        <div className="mt-4 flex items-center justify-between border-t border-border pt-3">
-          <span className="text-xs font-semibold text-muted-foreground">
-            {b.reference}
-          </span>
-          <span className="text-base font-bold text-foreground">
-            € {b.totalPrice.toFixed(2)}
-          </span>
+          <div className="mt-4 flex items-center justify-between border-t border-border pt-3">
+            <span className="text-xs font-semibold text-muted-foreground">
+              {b.reference}
+            </span>
+            <span className="text-base font-bold text-foreground">
+              € {b.totalPrice.toFixed(2)}
+            </span>
+          </div>
         </div>
+      </Link>
+
+      {/* Action buttons */}
+      <div className="grid grid-cols-3 border-t border-border">
+        <ActionButton
+          to="/app/bookings/$bookingId"
+          params={{ bookingId: b.id }}
+          icon={<Settings className="h-4 w-4" />}
+          label="Beheer"
+        />
+        <ActionButton
+          to="/app/bookings/$bookingId/support"
+          params={{ bookingId: b.id }}
+          icon={<LifeBuoy className="h-4 w-4" />}
+          label="Klantenservice"
+          divider
+        />
+        <ActionButton
+          to="/app/vouchers/$bookingId"
+          params={{ bookingId: b.id }}
+          icon={<Ticket className="h-4 w-4" />}
+          label="Voucher"
+          divider
+          highlight={isUpcoming}
+        />
       </div>
+    </div>
+  );
+}
 
-      {b.status === "upcoming" && (
-        <div
-          onClick={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            window.location.href = `/app/vouchers/${b.id}`;
-          }}
-          className="flex items-center justify-center gap-2 border-t border-border bg-secondary py-3 text-xs font-bold text-primary"
-        >
-          <Ticket className="h-3.5 w-3.5" /> Toon voucher
-        </div>
-      )}
+function ActionButton({
+  to,
+  params,
+  icon,
+  label,
+  divider,
+  highlight,
+}: {
+  to: string;
+  params: Record<string, string>;
+  icon: React.ReactNode;
+  label: string;
+  divider?: boolean;
+  highlight?: boolean;
+}) {
+  return (
+    <Link
+      to={to}
+      params={params as never}
+      className={`flex flex-col items-center justify-center gap-1 py-3 text-[11px] font-bold ${
+        highlight ? "bg-secondary text-primary" : "text-foreground"
+      } ${divider ? "border-l border-border" : ""}`}
+    >
+      {icon}
+      <span>{label}</span>
     </Link>
   );
 }
