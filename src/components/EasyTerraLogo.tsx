@@ -1,4 +1,4 @@
-import logoUrl from "@/assets/easyterra-logo.webp";
+import logoUrl from "@/assets/easyterra-logo-white.png";
 
 /**
  * Official EasyTerra logo (globe + car + wordmark).
