@@ -1,37 +1,28 @@
-import logoUrl from "@/assets/easyterra-logo.png";
+import logoUrl from "@/assets/easyterra-logo.webp";
 
 /**
- * Official EasyTerra wordmark + globe/car icon.
- * Sourced from easyterra.nl. The "light" variant is for use on the brand-blue
- * background; the "dark" variant adds a blue pill behind the logo so it stays
- * legible on white surfaces.
+ * Official EasyTerra logo (globe + car + wordmark).
+ * Always rendered inside a brand-blue pill so the black wordmark stays
+ * legible on both light and dark surfaces.
  */
 export function EasyTerraLogo({
-  variant = "light",
   size = "md",
 }: {
+  /** Kept for backwards compatibility — visual is the same on any surface. */
   variant?: "light" | "dark";
   size?: "sm" | "md" | "lg";
 }) {
-  const height = size === "lg" ? 38 : size === "sm" ? 22 : 28;
+  const height = size === "lg" ? 36 : size === "sm" ? 20 : 26;
 
-  const img = (
-    <img
-      src={logoUrl}
-      alt="EasyTerra"
-      style={{ height }}
-      className="block w-auto select-none"
-      draggable={false}
-    />
+  return (
+    <span className="inline-flex items-center rounded-lg bg-primary px-2.5 py-1.5">
+      <img
+        src={logoUrl}
+        alt="EasyTerra"
+        style={{ height }}
+        className="block w-auto select-none"
+        draggable={false}
+      />
+    </span>
   );
-
-  if (variant === "dark") {
-    return (
-      <span className="inline-flex items-center rounded-md bg-primary px-2 py-1">
-        {img}
-      </span>
-    );
-  }
-
-  return img;
 }
