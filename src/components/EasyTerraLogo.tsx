@@ -1,7 +1,10 @@
+import logoUrl from "@/assets/easyterra-logo.png";
+
 /**
- * EasyTerra wordmark.
- * Reproduces the easyterra.nl logo: lowercase "easy" + bold "terra"
- * with the brand-blue and brand-green color split.
+ * Official EasyTerra wordmark + globe/car icon.
+ * Sourced from easyterra.nl. The "light" variant is for use on the brand-blue
+ * background; the "dark" variant adds a blue pill behind the logo so it stays
+ * legible on white surfaces.
  */
 export function EasyTerraLogo({
   variant = "light",
@@ -10,19 +13,25 @@ export function EasyTerraLogo({
   variant?: "light" | "dark";
   size?: "sm" | "md" | "lg";
 }) {
-  const fontSize = size === "lg" ? 30 : size === "sm" ? 18 : 22;
-  // On dark/blue surfaces "easy" goes white, "terra" stays green for contrast.
-  const easyColor = variant === "light" ? "#ffffff" : "var(--et-blue)";
-  const terraColor = variant === "light" ? "var(--et-green)" : "var(--et-green-deep)";
+  const height = size === "lg" ? 38 : size === "sm" ? 22 : 28;
 
-  return (
-    <span
-      aria-label="EasyTerra"
-      className="inline-flex select-none items-baseline font-extrabold tracking-tight"
-      style={{ fontSize, lineHeight: 1, letterSpacing: "-0.02em" }}
-    >
-      <span style={{ color: easyColor }}>easy</span>
-      <span style={{ color: terraColor }}>terra</span>
-    </span>
+  const img = (
+    <img
+      src={logoUrl}
+      alt="EasyTerra"
+      style={{ height }}
+      className="block w-auto select-none"
+      draggable={false}
+    />
   );
+
+  if (variant === "dark") {
+    return (
+      <span className="inline-flex items-center rounded-md bg-primary px-2 py-1">
+        {img}
+      </span>
+    );
+  }
+
+  return img;
 }
