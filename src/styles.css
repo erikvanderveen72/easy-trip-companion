@@ -62,9 +62,25 @@
 }
 
 :root {
-  --radius: 0.625rem;
+  --radius: 0.875rem;
+
+  /* EasyTerra brand */
+  --et-blue: oklch(0.55 0.18 255);
+  --et-blue-deep: oklch(0.42 0.19 258);
+  --et-blue-soft: oklch(0.96 0.03 255);
+  --et-green: oklch(0.66 0.18 148);
+  --et-green-deep: oklch(0.55 0.18 148);
+  --et-yellow: oklch(0.86 0.16 90);
+  --et-ink: oklch(0.18 0.02 260);
+  --et-ink-soft: oklch(0.45 0.02 260);
+  --et-line: oklch(0.92 0.01 255);
+  --et-bg: oklch(0.985 0.004 255);
+
+  --shadow-card: 0 1px 2px oklch(0.2 0.05 260 / 0.06), 0 8px 24px oklch(0.2 0.05 260 / 0.06);
+  --shadow-phone: 0 30px 80px oklch(0.2 0.05 260 / 0.25), 0 10px 30px oklch(0.2 0.05 260 / 0.15);
+
   --background: oklch(1 0 0);
-  --foreground: oklch(0.129 0.042 264.695);
+  --foreground: var(--et-ink);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.129 0.042 264.695);
   --popover: oklch(1 0 0);
