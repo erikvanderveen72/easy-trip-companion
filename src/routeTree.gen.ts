@@ -11,12 +11,12 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as AppRouteImport } from './routes/app'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as AppSupportRouteImport } from './routes/app.support'
 import { Route as AppProfileRouteImport } from './routes/app.profile'
 import { Route as AppLoginRouteImport } from './routes/app.login'
 import { Route as AppBookingsRouteImport } from './routes/app.bookings'
 import { Route as AppVouchersBookingIdRouteImport } from './routes/app.vouchers.$bookingId'
 import { Route as AppBookingsBookingIdRouteImport } from './routes/app.bookings.$bookingId'
+import { Route as AppBookingsBookingIdSupportRouteImport } from './routes/app.bookings.$bookingId.support'
 
 const AppRoute = AppRouteImport.update({
   id: '/app',
@@ -27,11 +27,6 @@ const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
-} as any)
-const AppSupportRoute = AppSupportRouteImport.update({
-  id: '/support',
-  path: '/support',
-  getParentRoute: () => AppRoute,
 } as any)
 const AppProfileRoute = AppProfileRouteImport.update({
   id: '/profile',
@@ -58,6 +53,12 @@ const AppBookingsBookingIdRoute = AppBookingsBookingIdRouteImport.update({
   path: '/$bookingId',
   getParentRoute: () => AppBookingsRoute,
 } as any)
+const AppBookingsBookingIdSupportRoute =
+  AppBookingsBookingIdSupportRouteImport.update({
+    id: '/support',
+    path: '/support',
+    getParentRoute: () => AppBookingsBookingIdRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -65,9 +66,9 @@ export interface FileRoutesByFullPath {
   '/app/bookings': typeof AppBookingsRouteWithChildren
   '/app/login': typeof AppLoginRoute
   '/app/profile': typeof AppProfileRoute
-  '/app/support': typeof AppSupportRoute
-  '/app/bookings/$bookingId': typeof AppBookingsBookingIdRoute
+  '/app/bookings/$bookingId': typeof AppBookingsBookingIdRouteWithChildren
   '/app/vouchers/$bookingId': typeof AppVouchersBookingIdRoute
+  '/app/bookings/$bookingId/support': typeof AppBookingsBookingIdSupportRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -75,9 +76,9 @@ export interface FileRoutesByTo {
   '/app/bookings': typeof AppBookingsRouteWithChildren
   '/app/login': typeof AppLoginRoute
   '/app/profile': typeof AppProfileRoute
-  '/app/support': typeof AppSupportRoute
-  '/app/bookings/$bookingId': typeof AppBookingsBookingIdRoute
+  '/app/bookings/$bookingId': typeof AppBookingsBookingIdRouteWithChildren
   '/app/vouchers/$bookingId': typeof AppVouchersBookingIdRoute
+  '/app/bookings/$bookingId/support': typeof AppBookingsBookingIdSupportRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -86,9 +87,9 @@ export interface FileRoutesById {
   '/app/bookings': typeof AppBookingsRouteWithChildren
   '/app/login': typeof AppLoginRoute
   '/app/profile': typeof AppProfileRoute
-  '/app/support': typeof AppSupportRoute
-  '/app/bookings/$bookingId': typeof AppBookingsBookingIdRoute
+  '/app/bookings/$bookingId': typeof AppBookingsBookingIdRouteWithChildren
   '/app/vouchers/$bookingId': typeof AppVouchersBookingIdRoute
+  '/app/bookings/$bookingId/support': typeof AppBookingsBookingIdSupportRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -98,9 +99,9 @@ export interface FileRouteTypes {
     | '/app/bookings'
     | '/app/login'
     | '/app/profile'
-    | '/app/support'
     | '/app/bookings/$bookingId'
     | '/app/vouchers/$bookingId'
+    | '/app/bookings/$bookingId/support'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -108,9 +109,9 @@ export interface FileRouteTypes {
     | '/app/bookings'
     | '/app/login'
     | '/app/profile'
-    | '/app/support'
     | '/app/bookings/$bookingId'
     | '/app/vouchers/$bookingId'
+    | '/app/bookings/$bookingId/support'
   id:
     | '__root__'
     | '/'
@@ -118,9 +119,9 @@ export interface FileRouteTypes {
     | '/app/bookings'
     | '/app/login'
     | '/app/profile'
-    | '/app/support'
     | '/app/bookings/$bookingId'
     | '/app/vouchers/$bookingId'
+    | '/app/bookings/$bookingId/support'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -143,13 +144,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
-    }
-    '/app/support': {
-      id: '/app/support'
-      path: '/support'
-      fullPath: '/app/support'
-      preLoaderRoute: typeof AppSupportRouteImport
-      parentRoute: typeof AppRoute
     }
     '/app/profile': {
       id: '/app/profile'
@@ -186,15 +180,33 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppBookingsBookingIdRouteImport
       parentRoute: typeof AppBookingsRoute
     }
+    '/app/bookings/$bookingId/support': {
+      id: '/app/bookings/$bookingId/support'
+      path: '/support'
+      fullPath: '/app/bookings/$bookingId/support'
+      preLoaderRoute: typeof AppBookingsBookingIdSupportRouteImport
+      parentRoute: typeof AppBookingsBookingIdRoute
+    }
   }
 }
 
+interface AppBookingsBookingIdRouteChildren {
+  AppBookingsBookingIdSupportRoute: typeof AppBookingsBookingIdSupportRoute
+}
+
+const AppBookingsBookingIdRouteChildren: AppBookingsBookingIdRouteChildren = {
+  AppBookingsBookingIdSupportRoute: AppBookingsBookingIdSupportRoute,
+}
+
+const AppBookingsBookingIdRouteWithChildren =
+  AppBookingsBookingIdRoute._addFileChildren(AppBookingsBookingIdRouteChildren)
+
 interface AppBookingsRouteChildren {
-  AppBookingsBookingIdRoute: typeof AppBookingsBookingIdRoute
+  AppBookingsBookingIdRoute: typeof AppBookingsBookingIdRouteWithChildren
 }
 
 const AppBookingsRouteChildren: AppBookingsRouteChildren = {
-  AppBookingsBookingIdRoute: AppBookingsBookingIdRoute,
+  AppBookingsBookingIdRoute: AppBookingsBookingIdRouteWithChildren,
 }
 
 const AppBookingsRouteWithChildren = AppBookingsRoute._addFileChildren(
@@ -205,7 +217,6 @@ interface AppRouteChildren {
   AppBookingsRoute: typeof AppBookingsRouteWithChildren
   AppLoginRoute: typeof AppLoginRoute
   AppProfileRoute: typeof AppProfileRoute
-  AppSupportRoute: typeof AppSupportRoute
   AppVouchersBookingIdRoute: typeof AppVouchersBookingIdRoute
 }
 
@@ -213,7 +224,6 @@ const AppRouteChildren: AppRouteChildren = {
   AppBookingsRoute: AppBookingsRouteWithChildren,
   AppLoginRoute: AppLoginRoute,
   AppProfileRoute: AppProfileRoute,
-  AppSupportRoute: AppSupportRoute,
   AppVouchersBookingIdRoute: AppVouchersBookingIdRoute,
 }
 
@@ -226,3 +236,12 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+  }
+}

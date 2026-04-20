@@ -159,7 +159,8 @@ function BookingDetail() {
             sub={b.worryFree ? "€ 0 eigen risico" : "Vanaf € 5,57 per dag"}
           />
           <ManageRow
-            to="/app/support"
+            to="/app/bookings/$bookingId/support"
+            params={{ bookingId: b.id }}
             icon={LifeBuoy}
             label={`Hulp nodig? Contact ${b.supplier}`}
             sub="Partner-specifieke support"
@@ -243,6 +244,7 @@ function ManageRow({
   label,
   sub,
   to,
+  params,
   disabled,
   trailing,
 }: {
@@ -250,6 +252,7 @@ function ManageRow({
   label: string;
   sub?: string;
   to?: string;
+  params?: Record<string, string>;
   disabled?: boolean;
   trailing?: React.ReactNode;
 }) {
@@ -267,7 +270,11 @@ function ManageRow({
   );
   if (to && !disabled) {
     return (
-      <Link to={to} className="block border-b border-border last:border-b-0">
+      <Link
+        to={to}
+        params={params as never}
+        className="block border-b border-border last:border-b-0"
+      >
         {inner}
       </Link>
     );
