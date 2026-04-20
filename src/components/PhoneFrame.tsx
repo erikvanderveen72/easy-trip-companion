@@ -1,6 +1,6 @@
 import { Link, useLocation } from "@tanstack/react-router";
 import { Calendar, LifeBuoy, User, Signal, Wifi, BatteryFull } from "lucide-react";
-import type { ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 
 interface PhoneFrameProps {
   children: ReactNode;
@@ -14,10 +14,16 @@ const tabs = [
 ] as const;
 
 export function PhoneFrame({ children, showTabs = true }: PhoneFrameProps) {
-  const time = new Date().toLocaleTimeString("nl-NL", {
-    hour: "2-digit",
-    minute: "2-digit",
-  });
+  const [time, setTime] = useState("");
+  useEffect(() => {
+    const tick = () =>
+      setTime(
+        new Date().toLocaleTimeString("nl-NL", { hour: "2-digit", minute: "2-digit" }),
+      );
+    tick();
+    const i = setInterval(tick, 30_000);
+    return () => clearInterval(i);
+  }, []);
   const location = useLocation();
 
   return (
