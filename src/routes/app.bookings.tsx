@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { MapPin, Calendar, ShieldCheck, ChevronRight, Bell, Ticket } from "lucide-react";
 import { PhoneFrame } from "@/components/PhoneFrame";
+import { EasyTerraLogo } from "@/components/EasyTerraLogo";
 import { bookings, formatDate, daysBetween, type Booking } from "@/lib/demo-data";
 
 export const Route = createFileRoute("/app/bookings")({
