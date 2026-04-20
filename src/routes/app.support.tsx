@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import {
   MessageCircle,
@@ -239,5 +239,3 @@ function ContactTile({
     </a>
   );
 }
-// Link import kept for potential FAQ deep links
-export { Link };
