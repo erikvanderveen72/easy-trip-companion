@@ -9,38 +9,134 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as AppRouteImport } from './routes/app'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AppVoucherRouteImport } from './routes/app.voucher'
+import { Route as AppSupportRouteImport } from './routes/app.support'
+import { Route as AppProfileRouteImport } from './routes/app.profile'
+import { Route as AppLoginRouteImport } from './routes/app.login'
+import { Route as AppBookingsRouteImport } from './routes/app.bookings'
+import { Route as AppBookingsBookingIdRouteImport } from './routes/app.bookings.$bookingId'
 
+const AppRoute = AppRouteImport.update({
+  id: '/app',
+  path: '/app',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AppVoucherRoute = AppVoucherRouteImport.update({
+  id: '/voucher',
+  path: '/voucher',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppSupportRoute = AppSupportRouteImport.update({
+  id: '/support',
+  path: '/support',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppProfileRoute = AppProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppLoginRoute = AppLoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppBookingsRoute = AppBookingsRouteImport.update({
+  id: '/bookings',
+  path: '/bookings',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppBookingsBookingIdRoute = AppBookingsBookingIdRouteImport.update({
+  id: '/$bookingId',
+  path: '/$bookingId',
+  getParentRoute: () => AppBookingsRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/app': typeof AppRouteWithChildren
+  '/app/bookings': typeof AppBookingsRouteWithChildren
+  '/app/login': typeof AppLoginRoute
+  '/app/profile': typeof AppProfileRoute
+  '/app/support': typeof AppSupportRoute
+  '/app/voucher': typeof AppVoucherRoute
+  '/app/bookings/$bookingId': typeof AppBookingsBookingIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/app': typeof AppRouteWithChildren
+  '/app/bookings': typeof AppBookingsRouteWithChildren
+  '/app/login': typeof AppLoginRoute
+  '/app/profile': typeof AppProfileRoute
+  '/app/support': typeof AppSupportRoute
+  '/app/voucher': typeof AppVoucherRoute
+  '/app/bookings/$bookingId': typeof AppBookingsBookingIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/app': typeof AppRouteWithChildren
+  '/app/bookings': typeof AppBookingsRouteWithChildren
+  '/app/login': typeof AppLoginRoute
+  '/app/profile': typeof AppProfileRoute
+  '/app/support': typeof AppSupportRoute
+  '/app/voucher': typeof AppVoucherRoute
+  '/app/bookings/$bookingId': typeof AppBookingsBookingIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/app'
+    | '/app/bookings'
+    | '/app/login'
+    | '/app/profile'
+    | '/app/support'
+    | '/app/voucher'
+    | '/app/bookings/$bookingId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/app'
+    | '/app/bookings'
+    | '/app/login'
+    | '/app/profile'
+    | '/app/support'
+    | '/app/voucher'
+    | '/app/bookings/$bookingId'
+  id:
+    | '__root__'
+    | '/'
+    | '/app'
+    | '/app/bookings'
+    | '/app/login'
+    | '/app/profile'
+    | '/app/support'
+    | '/app/voucher'
+    | '/app/bookings/$bookingId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AppRoute: typeof AppRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/app': {
+      id: '/app'
+      path: '/app'
+      fullPath: '/app'
+      preLoaderRoute: typeof AppRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,11 +144,84 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/app/voucher': {
+      id: '/app/voucher'
+      path: '/voucher'
+      fullPath: '/app/voucher'
+      preLoaderRoute: typeof AppVoucherRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/support': {
+      id: '/app/support'
+      path: '/support'
+      fullPath: '/app/support'
+      preLoaderRoute: typeof AppSupportRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/profile': {
+      id: '/app/profile'
+      path: '/profile'
+      fullPath: '/app/profile'
+      preLoaderRoute: typeof AppProfileRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/login': {
+      id: '/app/login'
+      path: '/login'
+      fullPath: '/app/login'
+      preLoaderRoute: typeof AppLoginRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/bookings': {
+      id: '/app/bookings'
+      path: '/bookings'
+      fullPath: '/app/bookings'
+      preLoaderRoute: typeof AppBookingsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/bookings/$bookingId': {
+      id: '/app/bookings/$bookingId'
+      path: '/$bookingId'
+      fullPath: '/app/bookings/$bookingId'
+      preLoaderRoute: typeof AppBookingsBookingIdRouteImport
+      parentRoute: typeof AppBookingsRoute
+    }
   }
 }
 
+interface AppBookingsRouteChildren {
+  AppBookingsBookingIdRoute: typeof AppBookingsBookingIdRoute
+}
+
+const AppBookingsRouteChildren: AppBookingsRouteChildren = {
+  AppBookingsBookingIdRoute: AppBookingsBookingIdRoute,
+}
+
+const AppBookingsRouteWithChildren = AppBookingsRoute._addFileChildren(
+  AppBookingsRouteChildren,
+)
+
+interface AppRouteChildren {
+  AppBookingsRoute: typeof AppBookingsRouteWithChildren
+  AppLoginRoute: typeof AppLoginRoute
+  AppProfileRoute: typeof AppProfileRoute
+  AppSupportRoute: typeof AppSupportRoute
+  AppVoucherRoute: typeof AppVoucherRoute
+}
+
+const AppRouteChildren: AppRouteChildren = {
+  AppBookingsRoute: AppBookingsRouteWithChildren,
+  AppLoginRoute: AppLoginRoute,
+  AppProfileRoute: AppProfileRoute,
+  AppSupportRoute: AppSupportRoute,
+  AppVoucherRoute: AppVoucherRoute,
+}
+
+const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AppRoute: AppRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
