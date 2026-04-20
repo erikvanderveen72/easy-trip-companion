@@ -1,28 +1,25 @@
-import logoUrl from "@/assets/easyterra-logo-white.png";
+import logoUrl from "@/assets/easyterra-logo-blue.png";
 
 /**
- * Official EasyTerra logo (globe + car + wordmark).
- * Always rendered inside a brand-blue pill so the black wordmark stays
- * legible on both light and dark surfaces.
+ * Official EasyTerra logo lockup (already on its brand-blue background).
+ * Rendered as a single image — no extra pill wrapper needed.
  */
 export function EasyTerraLogo({
   size = "md",
 }: {
-  /** Kept for backwards compatibility — visual is the same on any surface. */
+  /** Kept for backwards compatibility. */
   variant?: "light" | "dark";
   size?: "sm" | "md" | "lg";
 }) {
-  const height = size === "lg" ? 36 : size === "sm" ? 20 : 26;
+  const height = size === "lg" ? 56 : size === "sm" ? 32 : 44;
 
   return (
-    <span className="inline-flex items-center rounded-lg bg-primary px-2.5 py-1.5">
-      <img
-        src={logoUrl}
-        alt="EasyTerra"
-        style={{ height }}
-        className="block w-auto select-none"
-        draggable={false}
-      />
-    </span>
+    <img
+      src={logoUrl}
+      alt="EasyTerra"
+      style={{ height }}
+      className="block w-auto select-none rounded-md"
+      draggable={false}
+    />
   );
 }
