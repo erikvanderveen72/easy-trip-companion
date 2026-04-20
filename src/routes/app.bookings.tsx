@@ -125,58 +125,34 @@ function BookingCard({ b }: { b: Booking }) {
 
       {/* Action buttons */}
       <div className="grid grid-cols-3 border-t border-border">
-        <ActionButton
+        <Link
           to="/app/bookings/$bookingId"
           params={{ bookingId: b.id }}
-          icon={<Settings className="h-4 w-4" />}
-          label="Beheer"
-        />
-        <ActionButton
+          className="flex flex-col items-center justify-center gap-1 py-3 text-[11px] font-bold text-foreground"
+        >
+          <Settings className="h-4 w-4" />
+          <span>Beheer</span>
+        </Link>
+        <Link
           to="/app/bookings/$bookingId/support"
           params={{ bookingId: b.id }}
-          icon={<LifeBuoy className="h-4 w-4" />}
-          label="Klantenservice"
-          divider
-        />
-        <ActionButton
+          className="flex flex-col items-center justify-center gap-1 border-l border-border py-3 text-[11px] font-bold text-foreground"
+        >
+          <LifeBuoy className="h-4 w-4" />
+          <span>Klantenservice</span>
+        </Link>
+        <Link
           to="/app/vouchers/$bookingId"
           params={{ bookingId: b.id }}
-          icon={<Ticket className="h-4 w-4" />}
-          label="Voucher"
-          divider
-          highlight={isUpcoming}
-        />
+          className={`flex flex-col items-center justify-center gap-1 border-l border-border py-3 text-[11px] font-bold ${
+            isUpcoming ? "bg-secondary text-primary" : "text-foreground"
+          }`}
+        >
+          <Ticket className="h-4 w-4" />
+          <span>Voucher</span>
+        </Link>
       </div>
     </div>
-  );
-}
-
-function ActionButton({
-  to,
-  params,
-  icon,
-  label,
-  divider,
-  highlight,
-}: {
-  to: string;
-  params: Record<string, string>;
-  icon: React.ReactNode;
-  label: string;
-  divider?: boolean;
-  highlight?: boolean;
-}) {
-  return (
-    <Link
-      to={to}
-      params={params as never}
-      className={`flex flex-col items-center justify-center gap-1 py-3 text-[11px] font-bold ${
-        highlight ? "bg-secondary text-primary" : "text-foreground"
-      } ${divider ? "border-l border-border" : ""}`}
-    >
-      {icon}
-      <span>{label}</span>
-    </Link>
   );
 }
 
