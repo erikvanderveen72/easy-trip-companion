@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { MapPin, Calendar, ShieldCheck, Bell, Ticket, Settings, LifeBuoy } from "lucide-react";
 import { PhoneFrame } from "@/components/PhoneFrame";
@@ -69,6 +69,7 @@ function BookingsScreen() {
 }
 
 function BookingCard({ b }: { b: Booking }) {
+  const navigate = useNavigate({ from: "/app/bookings" });
   const days = daysBetween(b.pickupDate, b.dropoffDate);
   const isUpcoming = b.status === "upcoming";
   return (
@@ -123,34 +124,39 @@ function BookingCard({ b }: { b: Booking }) {
         </div>
       </Link>
 
-      {/* Action buttons */}
       <div className="grid grid-cols-3 border-t border-border">
-        <Link
-          to="/app/bookings/$bookingId"
-          params={{ bookingId: b.id }}
+        <button
+          type="button"
+          onClick={() =>
+            navigate({ to: "/app/bookings/$bookingId", params: { bookingId: b.id } })
+          }
           className="flex flex-col items-center justify-center gap-1 py-3 text-[11px] font-bold text-foreground"
         >
           <Settings className="h-4 w-4" />
           <span>Beheer</span>
-        </Link>
-        <Link
-          to="/app/bookings/$bookingId/support"
-          params={{ bookingId: b.id }}
+        </button>
+        <button
+          type="button"
+          onClick={() =>
+            navigate({ to: "/app/bookings/$bookingId/support", params: { bookingId: b.id } })
+          }
           className="flex flex-col items-center justify-center gap-1 border-l border-border py-3 text-[11px] font-bold text-foreground"
         >
           <LifeBuoy className="h-4 w-4" />
           <span>Klantenservice</span>
-        </Link>
-        <Link
-          to="/app/vouchers/$bookingId"
-          params={{ bookingId: b.id }}
+        </button>
+        <button
+          type="button"
+          onClick={() =>
+            navigate({ to: "/app/vouchers/$bookingId", params: { bookingId: b.id } })
+          }
           className={`flex flex-col items-center justify-center gap-1 border-l border-border py-3 text-[11px] font-bold ${
             isUpcoming ? "bg-secondary text-primary" : "text-foreground"
           }`}
         >
           <Ticket className="h-4 w-4" />
           <span>Voucher</span>
-        </Link>
+        </button>
       </div>
     </div>
   );
