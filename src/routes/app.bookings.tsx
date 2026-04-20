@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { MapPin, Calendar, ShieldCheck, ChevronRight, Bell, Ticket } from "lucide-react";
 import { PhoneFrame } from "@/components/PhoneFrame";
+import { EasyTerraLogo } from "@/components/EasyTerraLogo";
 import { bookings, formatDate, daysBetween, type Booking } from "@/lib/demo-data";
 
 export const Route = createFileRoute("/app/bookings")({
@@ -16,31 +17,32 @@ function BookingsScreen() {
 
   return (
     <PhoneFrame>
-      {/* large title header */}
-      <div className="px-5 pt-3 pb-4">
+      {/* blue brand band */}
+      <div className="bg-primary px-5 pt-4 pb-6 text-primary-foreground">
         <div className="flex items-center justify-between">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-              Hi Lieke 👋
-            </p>
-            <h1 className="mt-1 text-[32px] font-bold leading-tight text-foreground">
-              Mijn boekingen
-            </h1>
-          </div>
-          <button className="relative flex h-10 w-10 items-center justify-center rounded-full bg-muted">
-            <Bell className="h-5 w-5 text-foreground" />
-            <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-destructive" />
+          <EasyTerraLogo size="sm" onBlue />
+          <button className="relative flex h-10 w-10 items-center justify-center rounded-full bg-white/15">
+            <Bell className="h-5 w-5 text-white" />
+            <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-accent" />
           </button>
         </div>
+        <p className="mt-5 text-xs font-semibold uppercase tracking-wide opacity-85">
+          Hi Lieke 👋
+        </p>
+        <h1 className="mt-1 text-[28px] font-bold leading-tight">
+          Mijn boekingen
+        </h1>
+      </div>
 
-        {/* segmented */}
-        <div className="mt-5 flex rounded-full bg-muted p-1 text-sm font-semibold">
+      {/* segmented overlapping band */}
+      <div className="-mt-4 px-5">
+        <div className="flex rounded-full bg-background p-1 text-sm font-semibold shadow-sm">
           {(["upcoming", "completed"] as const).map((t) => (
             <button
               key={t}
               onClick={() => setTab(t)}
               className={`flex-1 rounded-full py-2 transition ${
-                tab === t ? "bg-background text-foreground shadow-sm" : "text-muted-foreground"
+                tab === t ? "bg-primary text-primary-foreground" : "text-muted-foreground"
               }`}
             >
               {t === "upcoming" ? "Aankomend" : "Afgerond"}
@@ -48,7 +50,6 @@ function BookingsScreen() {
           ))}
         </div>
       </div>
-
       <div className="space-y-4 px-5 pt-2">
         {list.map((b) => (
           <BookingCard key={b.id} b={b} />
