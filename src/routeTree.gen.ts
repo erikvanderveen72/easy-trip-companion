@@ -11,11 +11,11 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as AppRouteImport } from './routes/app'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as AppVoucherRouteImport } from './routes/app.voucher'
 import { Route as AppSupportRouteImport } from './routes/app.support'
 import { Route as AppProfileRouteImport } from './routes/app.profile'
 import { Route as AppLoginRouteImport } from './routes/app.login'
 import { Route as AppBookingsRouteImport } from './routes/app.bookings'
+import { Route as AppVouchersBookingIdRouteImport } from './routes/app.vouchers.$bookingId'
 import { Route as AppBookingsBookingIdRouteImport } from './routes/app.bookings.$bookingId'
 
 const AppRoute = AppRouteImport.update({
@@ -27,11 +27,6 @@ const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
-} as any)
-const AppVoucherRoute = AppVoucherRouteImport.update({
-  id: '/voucher',
-  path: '/voucher',
-  getParentRoute: () => AppRoute,
 } as any)
 const AppSupportRoute = AppSupportRouteImport.update({
   id: '/support',
@@ -53,6 +48,11 @@ const AppBookingsRoute = AppBookingsRouteImport.update({
   path: '/bookings',
   getParentRoute: () => AppRoute,
 } as any)
+const AppVouchersBookingIdRoute = AppVouchersBookingIdRouteImport.update({
+  id: '/vouchers/$bookingId',
+  path: '/vouchers/$bookingId',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppBookingsBookingIdRoute = AppBookingsBookingIdRouteImport.update({
   id: '/$bookingId',
   path: '/$bookingId',
@@ -66,8 +66,8 @@ export interface FileRoutesByFullPath {
   '/app/login': typeof AppLoginRoute
   '/app/profile': typeof AppProfileRoute
   '/app/support': typeof AppSupportRoute
-  '/app/voucher': typeof AppVoucherRoute
   '/app/bookings/$bookingId': typeof AppBookingsBookingIdRoute
+  '/app/vouchers/$bookingId': typeof AppVouchersBookingIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -76,8 +76,8 @@ export interface FileRoutesByTo {
   '/app/login': typeof AppLoginRoute
   '/app/profile': typeof AppProfileRoute
   '/app/support': typeof AppSupportRoute
-  '/app/voucher': typeof AppVoucherRoute
   '/app/bookings/$bookingId': typeof AppBookingsBookingIdRoute
+  '/app/vouchers/$bookingId': typeof AppVouchersBookingIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -87,8 +87,8 @@ export interface FileRoutesById {
   '/app/login': typeof AppLoginRoute
   '/app/profile': typeof AppProfileRoute
   '/app/support': typeof AppSupportRoute
-  '/app/voucher': typeof AppVoucherRoute
   '/app/bookings/$bookingId': typeof AppBookingsBookingIdRoute
+  '/app/vouchers/$bookingId': typeof AppVouchersBookingIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -99,8 +99,8 @@ export interface FileRouteTypes {
     | '/app/login'
     | '/app/profile'
     | '/app/support'
-    | '/app/voucher'
     | '/app/bookings/$bookingId'
+    | '/app/vouchers/$bookingId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -109,8 +109,8 @@ export interface FileRouteTypes {
     | '/app/login'
     | '/app/profile'
     | '/app/support'
-    | '/app/voucher'
     | '/app/bookings/$bookingId'
+    | '/app/vouchers/$bookingId'
   id:
     | '__root__'
     | '/'
@@ -119,8 +119,8 @@ export interface FileRouteTypes {
     | '/app/login'
     | '/app/profile'
     | '/app/support'
-    | '/app/voucher'
     | '/app/bookings/$bookingId'
+    | '/app/vouchers/$bookingId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -143,13 +143,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
-    }
-    '/app/voucher': {
-      id: '/app/voucher'
-      path: '/voucher'
-      fullPath: '/app/voucher'
-      preLoaderRoute: typeof AppVoucherRouteImport
-      parentRoute: typeof AppRoute
     }
     '/app/support': {
       id: '/app/support'
@@ -179,6 +172,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppBookingsRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/vouchers/$bookingId': {
+      id: '/app/vouchers/$bookingId'
+      path: '/vouchers/$bookingId'
+      fullPath: '/app/vouchers/$bookingId'
+      preLoaderRoute: typeof AppVouchersBookingIdRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/app/bookings/$bookingId': {
       id: '/app/bookings/$bookingId'
       path: '/$bookingId'
@@ -206,7 +206,7 @@ interface AppRouteChildren {
   AppLoginRoute: typeof AppLoginRoute
   AppProfileRoute: typeof AppProfileRoute
   AppSupportRoute: typeof AppSupportRoute
-  AppVoucherRoute: typeof AppVoucherRoute
+  AppVouchersBookingIdRoute: typeof AppVouchersBookingIdRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
@@ -214,7 +214,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppLoginRoute: AppLoginRoute,
   AppProfileRoute: AppProfileRoute,
   AppSupportRoute: AppSupportRoute,
-  AppVoucherRoute: AppVoucherRoute,
+  AppVouchersBookingIdRoute: AppVouchersBookingIdRoute,
 }
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
@@ -226,3 +226,12 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+  }
+}

@@ -1,22 +1,38 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { QRCodeSVG } from "qrcode.react";
 import { ShieldCheck, Wallet, Share2, MapPin, Calendar } from "lucide-react";
 import { PhoneFrame } from "@/components/PhoneFrame";
 import { AppHeader } from "@/components/AppHeader";
-import { bookings, formatDate, formatTime } from "@/lib/demo-data";
+import { getBooking, formatDate, formatTime } from "@/lib/demo-data";
 import { EasyTerraLogo } from "@/components/EasyTerraLogo";
 
-export const Route = createFileRoute("/app/voucher")({
+export const Route = createFileRoute("/app/vouchers/$bookingId")({
+  loader: ({ params }) => {
+    const b = getBooking(params.bookingId);
+    if (!b) throw notFound();
+    return b;
+  },
   component: VoucherScreen,
+  notFoundComponent: () => (
+    <PhoneFrame showTabs={false}>
+      <div className="px-6 py-12 text-center">
+        <p className="text-sm text-muted-foreground">Voucher niet gevonden.</p>
+        <Link to="/app/bookings" className="mt-4 inline-block text-primary font-semibold">
+          Terug naar boekingen
+        </Link>
+      </div>
+    </PhoneFrame>
+  ),
 });
 
 function VoucherScreen() {
-  const b = bookings[0]; // primary upcoming
+  const b = Route.useLoaderData();
 
   return (
     <PhoneFrame>
       <AppHeader
         title="Voucher"
+        back="/app/bookings/$bookingId"
         right={
           <button className="flex h-9 w-9 items-center justify-center rounded-full hover:bg-muted">
             <Share2 className="h-5 w-5 text-foreground" />
@@ -42,6 +58,7 @@ function VoucherScreen() {
               Verhuurder
             </p>
             <p className="text-2xl font-bold">{b.supplier}</p>
+            <p className="mt-1 text-xs opacity-80">{b.carName} · {b.carCategory}</p>
           </div>
 
           <div className="mt-4 grid grid-cols-2 gap-4 px-6">
@@ -91,19 +108,19 @@ function VoucherScreen() {
           </div>
         </div>
 
-        {/* Add to wallet */}
         <button className="mt-4 flex w-full items-center justify-center gap-2 rounded-2xl bg-foreground py-3.5 text-sm font-semibold text-background">
           <Wallet className="h-4 w-4" /> Voeg toe aan Apple Wallet
         </button>
 
-        {/* Pickup info */}
         <div
           className="mt-4 rounded-3xl bg-background p-5"
           style={{ boxShadow: "var(--shadow-card)" }}
         >
-          <div className="mb-3 inline-flex items-center gap-1.5 rounded-full bg-accent/10 px-2.5 py-1 text-[10px] font-bold text-accent">
-            <ShieldCheck className="h-3 w-3" /> Worry-Free pakket actief
-          </div>
+          {b.worryFree && (
+            <div className="mb-3 inline-flex items-center gap-1.5 rounded-full bg-accent/10 px-2.5 py-1 text-[10px] font-bold text-accent">
+              <ShieldCheck className="h-3 w-3" /> Worry-Free pakket actief
+            </div>
+          )}
           <h3 className="text-sm font-bold text-foreground">Bij de balie tonen</h3>
           <p className="mt-1 text-xs text-muted-foreground">
             Toon deze voucher samen met je rijbewijs en creditcard van de
