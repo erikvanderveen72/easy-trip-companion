@@ -1,5 +1,5 @@
 import { Link, useLocation } from "@tanstack/react-router";
-import { Calendar, Ticket, LifeBuoy, User, Signal, Wifi, BatteryFull } from "lucide-react";
+import { Calendar, LifeBuoy, User, Signal, Wifi, BatteryFull } from "lucide-react";
 import type { ReactNode } from "react";
 
 interface PhoneFrameProps {
@@ -9,7 +9,6 @@ interface PhoneFrameProps {
 
 const tabs = [
   { to: "/app/bookings", label: "Boekingen", icon: Calendar },
-  { to: "/app/voucher", label: "Voucher", icon: Ticket },
   { to: "/app/support", label: "Support", icon: LifeBuoy },
   { to: "/app/profile", label: "Profiel", icon: User },
 ] as const;
@@ -27,7 +26,6 @@ export function PhoneFrame({ children, showTabs = true }: PhoneFrameProps) {
         className="relative w-[390px] h-[844px] rounded-[55px] bg-[#0b1220] p-[14px]"
         style={{ boxShadow: "var(--shadow-phone)" }}
       >
-        {/* screen */}
         <div className="relative h-full w-full overflow-hidden rounded-[42px] bg-background">
           {/* status bar */}
           <div className="absolute inset-x-0 top-0 z-30 flex h-12 items-center justify-between px-7 pt-2 text-[13px] font-semibold text-foreground">
@@ -40,10 +38,8 @@ export function PhoneFrame({ children, showTabs = true }: PhoneFrameProps) {
             </div>
           </div>
 
-          {/* content */}
           <div className="h-full overflow-y-auto pt-12 pb-24">{children}</div>
 
-          {/* tab bar */}
           {showTabs && (
             <nav className="absolute inset-x-0 bottom-0 z-20 border-t border-border bg-background/95 backdrop-blur-xl">
               <div className="flex items-end justify-around px-2 pt-2 pb-6">

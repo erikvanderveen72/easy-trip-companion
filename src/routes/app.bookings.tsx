@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
-import { MapPin, Calendar, ShieldCheck, ChevronRight, Bell } from "lucide-react";
+import { MapPin, Calendar, ShieldCheck, ChevronRight, Bell, Ticket } from "lucide-react";
 import { PhoneFrame } from "@/components/PhoneFrame";
 import { bookings, formatDate, daysBetween, type Booking } from "@/lib/demo-data";
 
@@ -59,13 +59,9 @@ function BookingsScreen() {
           </div>
         )}
 
-        <Link
-          to="/"
-          className="mt-2 block rounded-3xl border border-dashed border-primary/40 bg-secondary p-5 text-center"
-        >
-          <p className="text-sm font-semibold text-primary">+ Nieuwe huurauto zoeken</p>
-          <p className="mt-1 text-xs text-muted-foreground">Vergelijk 24.000+ ophaallocaties</p>
-        </Link>
+        <p className="pt-2 pb-1 text-center text-[11px] text-muted-foreground">
+          Beheer je auto via de boekingsdetails.
+        </p>
       </div>
     </PhoneFrame>
   );
@@ -123,6 +119,19 @@ function BookingCard({ b }: { b: Booking }) {
           </span>
         </div>
       </div>
+
+      {b.status === "upcoming" && (
+        <div
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            window.location.href = `/app/vouchers/${b.id}`;
+          }}
+          className="flex items-center justify-center gap-2 border-t border-border bg-secondary py-3 text-xs font-bold text-primary"
+        >
+          <Ticket className="h-3.5 w-3.5" /> Toon voucher
+        </div>
+      )}
     </Link>
   );
 }

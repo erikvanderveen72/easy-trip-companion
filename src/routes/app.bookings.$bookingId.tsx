@@ -1,14 +1,19 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import {
-  MapPin,
   Calendar,
   Clock,
   ShieldCheck,
   Ticket,
-  Phone,
   Navigation,
   FileText,
   ChevronRight,
+  CalendarClock,
+  UserPlus,
+  Receipt,
+  XCircle,
+  LifeBuoy,
+  Download,
+  type LucideIcon,
 } from "lucide-react";
 import { PhoneFrame } from "@/components/PhoneFrame";
 import { AppHeader } from "@/components/AppHeader";
@@ -36,6 +41,7 @@ export const Route = createFileRoute("/app/bookings/$bookingId")({
 function BookingDetail() {
   const b = Route.useLoaderData();
   const days = daysBetween(b.pickupDate, b.dropoffDate);
+  const isUpcoming = b.status === "upcoming";
 
   return (
     <PhoneFrame>
@@ -71,7 +77,8 @@ function BookingDetail() {
           </p>
 
           <Link
-            to="/app/voucher"
+            to="/app/vouchers/$bookingId"
+            params={{ bookingId: b.id }}
             className="mt-5 flex items-center justify-center gap-2 rounded-2xl bg-primary py-3.5 text-sm font-semibold text-primary-foreground"
           >
             <Ticket className="h-4 w-4" /> Toon voucher
@@ -126,21 +133,60 @@ function BookingDetail() {
           </div>
         </div>
 
-        {/* actions */}
-        <div className="mt-4 space-y-2">
-          <ActionRow icon={<Phone className="h-4 w-4" />} label="Bel verhuurder" sub={b.supplier} />
-          <ActionRow icon={<FileText className="h-4 w-4" />} label="Huurvoorwaarden" sub="PDF · 240 kB" />
+        {/* BEHEER */}
+        <h3 className="mt-6 mb-2 px-1 text-xs font-bold uppercase tracking-wider text-muted-foreground">
+          Beheer deze auto
+        </h3>
+        <div
+          className="overflow-hidden rounded-3xl bg-background"
+          style={{ boxShadow: "var(--shadow-card)" }}
+        >
+          <ManageRow
+            icon={CalendarClock}
+            label="Wijzig datum of tijd"
+            sub={isUpcoming ? "Gratis tot 24 uur vóór ophaal" : "Niet meer mogelijk"}
+            disabled={!isUpcoming}
+          />
+          <ManageRow
+            icon={UserPlus}
+            label="Extra bestuurder toevoegen"
+            sub="€ 5 per dag"
+            disabled={!isUpcoming}
+          />
+          <ManageRow
+            icon={ShieldCheck}
+            label={b.worryFree ? "Worry-Free actief" : "Worry-Free toevoegen"}
+            sub={b.worryFree ? "€ 0 eigen risico" : "Vanaf € 5,57 per dag"}
+          />
+          <ManageRow
+            to="/app/support"
+            icon={LifeBuoy}
+            label={`Hulp nodig? Contact ${b.supplier}`}
+            sub="Partner-specifieke support"
+          />
+        </div>
+
+        {/* Documenten */}
+        <h3 className="mt-6 mb-2 px-1 text-xs font-bold uppercase tracking-wider text-muted-foreground">
+          Documenten
+        </h3>
+        <div
+          className="overflow-hidden rounded-3xl bg-background"
+          style={{ boxShadow: "var(--shadow-card)" }}
+        >
+          <ManageRow icon={Receipt} label="Factuur downloaden" sub={`PDF · € ${b.totalPrice.toFixed(2)}`} trailing={<Download className="h-4 w-4 text-muted-foreground" />} />
+          <ManageRow icon={FileText} label="Huurvoorwaarden" sub="PDF · 240 kB" trailing={<Download className="h-4 w-4 text-muted-foreground" />} />
         </div>
 
         {/* price */}
         <div
-          className="mt-4 rounded-3xl bg-background p-5"
+          className="mt-6 rounded-3xl bg-background p-5"
           style={{ boxShadow: "var(--shadow-card)" }}
         >
           <h3 className="text-sm font-bold text-foreground">Prijsoverzicht</h3>
           <div className="mt-3 space-y-2 text-sm">
-            <PriceRow label={`Huurperiode (${days} dagen)`} value={b.totalPrice - 39} />
-            <PriceRow label="Worry-Free pakket" value={39} />
+            <PriceRow label={`Huurperiode (${days} dagen)`} value={b.totalPrice - (b.worryFree ? 39 : 0)} />
+            {b.worryFree && <PriceRow label="Worry-Free pakket" value={39} />}
             <div className="my-2 h-px bg-border" />
             <div className="flex justify-between text-base">
               <span className="font-bold text-foreground">Totaal betaald</span>
@@ -149,12 +195,16 @@ function BookingDetail() {
           </div>
         </div>
 
-        <button className="mt-4 mb-2 w-full rounded-2xl border border-destructive/30 bg-background py-3.5 text-sm font-semibold text-destructive">
-          Boeking annuleren
-        </button>
-        <p className="mb-6 text-center text-[11px] text-muted-foreground">
-          Gratis annuleren tot 48 uur voor ophalen
-        </p>
+        {isUpcoming && (
+          <>
+            <button className="mt-6 mb-2 inline-flex w-full items-center justify-center gap-2 rounded-2xl border border-destructive/30 bg-background py-3.5 text-sm font-semibold text-destructive">
+              <XCircle className="h-4 w-4" /> Boeking annuleren
+            </button>
+            <p className="mb-6 text-center text-[11px] text-muted-foreground">
+              Gratis annuleren tot 48 uur voor ophalen
+            </p>
+          </>
+        )}
       </div>
     </PhoneFrame>
   );
@@ -188,28 +238,47 @@ function TripBlock({
   );
 }
 
-function ActionRow({
-  icon,
+function ManageRow({
+  icon: Icon,
   label,
   sub,
+  to,
+  disabled,
+  trailing,
 }: {
-  icon: React.ReactNode;
+  icon: LucideIcon;
   label: string;
-  sub: string;
+  sub?: string;
+  to?: string;
+  disabled?: boolean;
+  trailing?: React.ReactNode;
 }) {
-  return (
-    <button
-      className="flex w-full items-center gap-3 rounded-2xl bg-background px-4 py-3.5 text-left"
-      style={{ boxShadow: "var(--shadow-card)" }}
-    >
+  const inner = (
+    <div className={`flex w-full items-center gap-3 px-4 py-3.5 text-left ${disabled ? "opacity-50" : ""}`}>
       <span className="flex h-9 w-9 items-center justify-center rounded-full bg-secondary text-primary">
-        {icon}
+        <Icon className="h-4 w-4" />
       </span>
       <div className="flex-1">
         <p className="text-sm font-semibold text-foreground">{label}</p>
-        <p className="text-xs text-muted-foreground">{sub}</p>
+        {sub && <p className="text-xs text-muted-foreground">{sub}</p>}
       </div>
-      <ChevronRight className="h-5 w-5 text-muted-foreground" />
+      {trailing ?? <ChevronRight className="h-4 w-4 text-muted-foreground" />}
+    </div>
+  );
+  if (to && !disabled) {
+    return (
+      <Link to={to} className="block border-b border-border last:border-b-0">
+        {inner}
+      </Link>
+    );
+  }
+  return (
+    <button
+      type="button"
+      disabled={disabled}
+      className="block w-full border-b border-border last:border-b-0"
+    >
+      {inner}
     </button>
   );
 }
